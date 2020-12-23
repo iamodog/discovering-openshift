@@ -1,4 +1,4 @@
-FROM node:10-alpine as builder
+FROM node:15-alpine3.10 as builder
 
 COPY package.json package-lock.json ./
 RUN npm install --only=prod&& mkdir /react-frontend && mv ./node_modules ./react-frontend
@@ -9,7 +9,7 @@ COPY . .
 
 RUN npm run build
 
-FROM nginxinc/nginx-unprivileged 
+FROM nginx:1.19.6-alpine 
 COPY --from=builder /react-frontend/build /usr/share/nginx/html
 RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx/nginx.conf /etc/nginx/conf.d
